@@ -16,38 +16,30 @@ var CDD_CONFIG = {
 };
 
 /* ---------------------------------------------------------
-   2. Simple frontend-only "session"
-   Real authentication will be handled by Django later.
+   2. Session
+   Real session handling lives in js/session.js (protected
+   pages, logout, navigation state). The helpers below are
+   kept for backwards compatibility with existing pages.
    --------------------------------------------------------- */
 function getCurrentUser() {
     var raw = localStorage.getItem("cdd_user");
     return raw ? JSON.parse(raw) : null;
 }
 
-function isLoggedIn() {
-    return getCurrentUser() !== null;
-}
-
-function logout() {
-    localStorage.removeItem("cdd_user");
-    // FUTURE DJANGO API
-    // fetch('/api/auth/logout/', { method: 'POST' });
-    window.location.href = "../index.html";
-}
-
 /* Used by the landing page "Scan Your Crop" button. */
 function goToScan(pathPrefix) {
     var prefix = pathPrefix || "";
-    window.location.href = isLoggedIn()
-        ? prefix + "scan.html"
-        : prefix + "login.html";
+    authCheckSession().then(function (user) {
+        window.location.href = user
+            ? prefix + "scan.html"
+            : prefix + "login.html";
+    });
 }
 
-/* Redirect guests away from farmer pages (frontend-only guard). */
+/* Redirect guests away from farmer pages (frontend-only guard).
+   Returns a Promise resolving to the user or null. */
 function requireLogin() {
-    if (!isLoggedIn()) {
-        window.location.href = "login.html";
-    }
+    return requireAuth();
 }
 
 /* ---------------------------------------------------------
@@ -87,11 +79,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    var logoutButtons = document.querySelectorAll("[data-action='logout']");
-    for (var j = 0; j < logoutButtons.length; j++) {
-        logoutButtons[j].addEventListener("click", function (event) {
-            event.preventDefault();
-            logout();
-        });
-    }
+    /* Logout buttons are wired in js/session.js. */
 });
