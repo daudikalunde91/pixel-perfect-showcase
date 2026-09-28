@@ -4,7 +4,7 @@
    Later it will come from Django (/api/predictions/<id>/).
    ========================================================= */
 
-var LOW_CONFIDENCE_LIMIT = 60;
+var LOW_CONFIDENCE_LIMIT = CDD_CONFIG.LOW_CONFIDENCE_THRESHOLD;
 
 function getQueryId() {
     var params = new URLSearchParams(window.location.search);
