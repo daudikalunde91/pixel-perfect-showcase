@@ -4,107 +4,16 @@
    ========================================================= */
 
 /* ---------------------------------------------------------
-   1. Language support (English / Kiswahili)
-   The selected language is stored in localStorage.
-   Any element with data-i18n="key" gets translated.
+   1. App configuration
+   Language support lives in js/language.js (load it first).
+   LOW_CONFIDENCE_THRESHOLD: predictions below this % are NOT
+   shown as a diagnosis. Placeholder value — to be tuned once the
+   real TensorFlow model is evaluated.
    --------------------------------------------------------- */
-var TRANSLATIONS = {
-    en: {
-        brand: "Crop Disease Detector",
-        home: "Home",
-        about: "About",
-        howItWorks: "How It Works",
-        supportedCrops: "Supported Crops",
-        login: "Login",
-        register: "Register",
-        logout: "Logout",
-        heroTitle: "Detect Crop Diseases with AI",
-        heroText: "Upload or capture a crop image and get an AI-assisted disease prediction.",
-        scanCrop: "Scan Your Crop",
-        learnMore: "Learn More",
-        dashboard: "Dashboard",
-        newScan: "New Scan",
-        scanHistory: "Scan History",
-        profile: "Profile",
-        welcome: "Welcome, Farmer",
-        totalScans: "Total Scans",
-        healthyCrops: "Healthy Crops",
-        diseasesDetected: "Diseases Detected",
-        lastScan: "Last Scan",
-        recentScans: "Recent Scans",
-        takePhoto: "Take Photo",
-        uploadImage: "Upload Image",
-        analyze: "Analyze Image",
-        remove: "Remove",
-        result: "Result",
-        confidence: "Confidence",
-        symptoms: "Symptoms",
-        management: "Management",
-        prevention: "Prevention"
-    },
-    sw: {
-        brand: "Kigunduzi cha Magonjwa ya Mazao",
-        home: "Mwanzo",
-        about: "Kuhusu",
-        howItWorks: "Jinsi Inavyofanya Kazi",
-        supportedCrops: "Mazao Yanayohudumiwa",
-        login: "Ingia",
-        register: "Jisajili",
-        logout: "Toka",
-        heroTitle: "Gundua Magonjwa ya Mazao kwa AI",
-        heroText: "Pakia au piga picha ya zao lako upate utabiri wa ugonjwa kwa msaada wa AI.",
-        scanCrop: "Skani Zao Lako",
-        learnMore: "Jifunze Zaidi",
-        dashboard: "Dashibodi",
-        newScan: "Skani Mpya",
-        scanHistory: "Historia ya Skani",
-        profile: "Wasifu",
-        welcome: "Karibu, Mkulima",
-        totalScans: "Jumla ya Skani",
-        healthyCrops: "Mazao Yenye Afya",
-        diseasesDetected: "Magonjwa Yaliyogundulika",
-        lastScan: "Skani ya Mwisho",
-        recentScans: "Skani za Karibuni",
-        takePhoto: "Piga Picha",
-        uploadImage: "Pakia Picha",
-        analyze: "Chambua Picha",
-        remove: "Ondoa",
-        result: "Matokeo",
-        confidence: "Uhakika",
-        symptoms: "Dalili",
-        management: "Udhibiti",
-        prevention: "Kinga"
-    }
+var CDD_CONFIG = {
+    LOW_CONFIDENCE_THRESHOLD: 60,
+    USE_MOCK_DATA: true
 };
-
-function getLanguage() {
-    return localStorage.getItem("cdd_language") || "en";
-}
-
-function setLanguage(lang) {
-    localStorage.setItem("cdd_language", lang);
-    applyLanguage();
-}
-
-function applyLanguage() {
-    var lang = getLanguage();
-    var dictionary = TRANSLATIONS[lang] || TRANSLATIONS.en;
-
-    var nodes = document.querySelectorAll("[data-i18n]");
-    for (var i = 0; i < nodes.length; i++) {
-        var key = nodes[i].getAttribute("data-i18n");
-        if (dictionary[key]) {
-            nodes[i].textContent = dictionary[key];
-        }
-    }
-
-    var buttons = document.querySelectorAll("[data-lang]");
-    for (var j = 0; j < buttons.length; j++) {
-        var isActive = buttons[j].getAttribute("data-lang") === lang;
-        buttons[j].classList.toggle("btn-green", isActive);
-        buttons[j].classList.toggle("btn-outline-green", !isActive);
-    }
-}
 
 /* ---------------------------------------------------------
    2. Simple frontend-only "session"
