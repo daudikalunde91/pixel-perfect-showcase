@@ -55,7 +55,21 @@ var TRANSLATIONS = {
         confidence: "Confidence",
         symptoms: "Symptoms",
         management: "Management",
-        prevention: "Prevention"
+        prevention: "Prevention",
+        rememberMe: "Remember me",
+        forgotPassword: "Forgot Password?",
+        resetPassword: "Reset Password",
+        changePassword: "Change Password",
+        continueWithGoogle: "Continue with Google",
+        googleNeedsSetup: "Continue with Google (needs backend setup)",
+        orContinueWith: "or continue with",
+        acceptTerms: "I accept the terms of use",
+        sendResetLink: "Send Reset Link",
+        currentPassword: "Current Password",
+        newPassword: "New Password",
+        accountType: "Account Type",
+        provider: "Sign-in Method",
+        memberSince: "Member Since"
     },
     sw: {
         demoNotice: "Matokeo ya majaribio: utabiri huu unatumia data ya mfano. Uchambuzi halisi wa AI utaunganishwa baadaye.",
@@ -103,7 +117,21 @@ var TRANSLATIONS = {
         confidence: "Uhakika",
         symptoms: "Dalili",
         management: "Udhibiti",
-        prevention: "Kinga"
+        prevention: "Kinga",
+        rememberMe: "Nikumbuke",
+        forgotPassword: "Umesahau Nenosiri?",
+        resetPassword: "Weka Nenosiri Jipya",
+        changePassword: "Badilisha Nenosiri",
+        continueWithGoogle: "Endelea na Google",
+        googleNeedsSetup: "Endelea na Google (inahitaji backend)",
+        orContinueWith: "au endelea na",
+        acceptTerms: "Nakubali masharti ya matumizi",
+        sendResetLink: "Tuma Kiungo cha Kubadilisha",
+        currentPassword: "Nenosiri la Sasa",
+        newPassword: "Nenosiri Jipya",
+        accountType: "Aina ya Akaunti",
+        provider: "Njia ya Kuingia",
+        memberSince: "Mwanachama Tangu"
     }
 };
 
