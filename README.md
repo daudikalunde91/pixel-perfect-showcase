@@ -2,7 +2,7 @@
 
 this is my repository      https://github.com/daudikalunde91/pixel-perfect-clone.git
 
-This project was built with [Lovable](https://lovable.dev).
+.
 | Stage   | Jina                      | Kazi kuu                                                       | Inategemea |
 | ------- | ------------------------- | -------------------------------------------------------------- | ---------- |
 | **M0**  | Project Foundation        | structure, requirements, Git, environment, documentation       | —          |
