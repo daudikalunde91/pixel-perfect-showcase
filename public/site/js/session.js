@@ -62,7 +62,8 @@ function requireAdmin() {
    --------------------------------------------------------- */
 function performLogout() {
     authLogout().then(function () {
-        window.location.href = "../index.html";
+        var inPages = window.location.pathname.indexOf("/pages/") !== -1;
+        window.location.href = inPages ? "../index.html" : "index.html";
     });
 }
 

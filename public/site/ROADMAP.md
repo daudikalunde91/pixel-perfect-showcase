@@ -2,11 +2,14 @@
 
 ## M1 — Frontend (current)
 - [x] Public pages: Home, About, How It Works, Supported Crops
-- [x] Login / Register UI with frontend validation only
 - [x] Farmer dashboard, Scan, Result, History, Profile, Admin dashboard
 - [x] English / Kiswahili toggle (js/language.js, saved in localStorage)
 - [x] Mock JSON data (data/*.json) — clearly marked as demo
 - [x] Configurable low-confidence threshold (CDD_CONFIG in js/app.js)
+- [x] Complete authentication frontend (see docs/AUTHENTICATION.md):
+      register/login/logout, remember-me, forgot/reset/change password,
+      real Google Identity Services button, session states, protected
+      pages, role-based UI, CSRF-ready API contracts, isolated demo mode
 
 ## M2 — Django backend
 - Django project, MySQL database, Django templates serving these pages
