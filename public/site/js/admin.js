@@ -36,6 +36,11 @@ function renderAdmin(crops, diseases, predictions) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    /* UX gate only — Django must re-check the admin role server-side. */
+    requireAdmin().then(function (user) {
+        if (!user) {
+            return;
+        }
     // FUTURE DJANGO API: /api/crops/, /api/diseases/, /api/predictions/
     Promise.all([
         loadJSON("../data/mock-crops.json"),
