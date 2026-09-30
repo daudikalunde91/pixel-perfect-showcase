@@ -3,10 +3,9 @@
 
    PRODUCTION ARCHITECTURE (Django + MySQL):
    Every function below maps 1:1 to a future Django endpoint.
-   While CDD_CONFIG.USE_MOCK_DATA is true, calls are delegated
-   to js/mock-auth.js (DEMO ONLY). To go live, set
-   USE_MOCK_DATA = false and implement the Django endpoints —
-   no UI changes are needed.
+   There is NO mock authentication: every call hits Django.
+   Until the Django endpoints exist, calls fail with a clear
+   "backend unavailable" error instead of faking success.
 
    API CONTRACT (JSON request/response):
      POST /api/auth/register/                { fullName, email, phone, password }
@@ -67,12 +66,16 @@ function apiFetch(url, options) {
     if (opts.body && typeof opts.body !== "string") {
         opts.body = JSON.stringify(opts.body);
     }
-    return fetch(url, opts).then(function (response) {
+    return fetch(AUTH_API_BASE + url, opts).catch(function () {
+        throw new AuthError("NETWORK_ERROR", "Cannot reach the authentication server. The Django backend is not running yet.");
+    }).then(function (response) {
         if (response.status === 401) {
             Auth.state = AuthState.SESSION_EXPIRED;
             throw new AuthError("SESSION_EXPIRED", "Your session has expired. Please log in again.");
         }
-        return response.json().then(function (data) {
+        return response.json().catch(function () {
+            throw new AuthError("BACKEND_UNAVAILABLE", "The authentication server is not available yet (Django backend required).");
+        }).then(function (data) {
             if (!response.ok) {
                 throw new AuthError(data.code || "AUTH_ERROR", data.message || "Unable to connect to the server.");
             }
@@ -87,11 +90,11 @@ function AuthError(code, message) {
 }
 
 /* ---------------------------------------------------------
-   3. Backend selection: mock (demo) vs Django (production)
+   3. Backend configuration (Django only — no mock auth)
    --------------------------------------------------------- */
-function useMock() {
-    return typeof CDD_CONFIG !== "undefined" && CDD_CONFIG.USE_MOCK_DATA;
-}
+/* All auth traffic goes to the real Django backend. Change the
+   base URL here (or set window.CDD_API_BASE before this script). */
+var AUTH_API_BASE = (typeof window !== "undefined" && window.CDD_API_BASE) || "";
 
 /* ---------------------------------------------------------
    4. Public authentication API
@@ -101,9 +104,6 @@ function useMock() {
 
 function authRegister(input) {
     Auth.state = AuthState.AUTHENTICATING;
-    if (useMock()) {
-        return MockAuth.register(input).then(afterAuthSuccess).catch(afterAuthError);
-    }
     return apiFetch("/api/auth/register/", { method: "POST", body: input })
         .then(function (data) { return afterAuthSuccess(data.user); })
         .catch(afterAuthError);
@@ -111,9 +111,6 @@ function authRegister(input) {
 
 function authLogin(email, password, remember) {
     Auth.state = AuthState.AUTHENTICATING;
-    if (useMock()) {
-        return MockAuth.login(email, password, remember).then(afterAuthSuccess).catch(afterAuthError);
-    }
     return apiFetch("/api/auth/login/", {
         method: "POST",
         body: { email: email, password: password, remember: !!remember }
@@ -126,9 +123,6 @@ function authLogin(email, password, remember) {
    as the application session itself. */
 function authGoogle(credential) {
     Auth.state = AuthState.AUTHENTICATING;
-    if (useMock()) {
-        return MockAuth.google(credential).then(afterAuthSuccess).catch(afterAuthError);
-    }
     return apiFetch("/api/auth/google/", { method: "POST", body: { credential: credential } })
         .then(function (data) { return afterAuthSuccess(data.user); })
         .catch(afterAuthError);
@@ -141,26 +135,11 @@ function authLogout() {
         Auth.user = null;
         clearSessionCache();
     };
-    if (useMock()) {
-        return MockAuth.logout().then(done);
-    }
     return apiFetch("/api/auth/logout/", { method: "POST" }).then(done).catch(done);
 }
 
 /* Session verification — used by protected pages. */
 function authCheckSession() {
-    if (useMock()) {
-        return MockAuth.session().then(function (user) {
-            if (user) {
-                Auth.state = AuthState.AUTHENTICATED;
-                Auth.user = user;
-            } else {
-                Auth.state = AuthState.UNAUTHENTICATED;
-                Auth.user = null;
-            }
-            return user;
-        });
-    }
     return apiFetch("/api/auth/session/", { method: "GET" }).then(function (data) {
         if (data.authenticated) {
             Auth.state = AuthState.AUTHENTICATED;
@@ -174,16 +153,10 @@ function authCheckSession() {
 }
 
 function authRequestPasswordReset(email) {
-    if (useMock()) {
-        return MockAuth.requestPasswordReset(email);
-    }
     return apiFetch("/api/auth/password-reset/", { method: "POST", body: { email: email } });
 }
 
 function authConfirmPasswordReset(token, password) {
-    if (useMock()) {
-        return MockAuth.confirmPasswordReset(token, password);
-    }
     return apiFetch("/api/auth/password-reset-confirm/", {
         method: "POST",
         body: { token: token, password: password }
@@ -191,9 +164,6 @@ function authConfirmPasswordReset(token, password) {
 }
 
 function authChangePassword(currentPassword, newPassword) {
-    if (useMock()) {
-        return MockAuth.changePassword(currentPassword, newPassword);
-    }
     return apiFetch("/api/auth/change-password/", {
         method: "POST",
         body: { currentPassword: currentPassword, newPassword: newPassword }
