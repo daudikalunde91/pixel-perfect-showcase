@@ -14,9 +14,7 @@ Frontend (HTML + Bootstrap + Vanilla JS)
 
 - `js/auth.js` — central helper: auth states, CSRF-ready `apiFetch`, all
   auth functions, validation, loading/error UI helpers.
-- `js/mock-auth.js` — **DEMO / DEVELOPMENT ONLY**. Lets the UI be tested
-  before Django exists. Delete this file and set
-  `CDD_CONFIG.USE_MOCK_DATA = false` in `js/app.js` to go live.
+- Mock authentication was removed (M3). All auth calls go to Django; if the backend is not running, pages show "authentication server not available" instead of faking success.
 - `js/session.js` — session checks, protected pages, logout, navbar state.
 - `js/google-auth.js` — real Google Identity Services integration.
 - `js/auth-pages.js` — form wiring for login/register/forgot/reset pages.

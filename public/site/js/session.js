@@ -1,6 +1,6 @@
 /* =========================================================
    session.js — session state, protected pages, navigation.
-   Load AFTER app.js, auth.js and mock-auth.js.
+   Load AFTER app.js, and auth.js.
 
    Frontend protection is UX only. The Django backend is the
    real security layer and must enforce authentication and
@@ -21,6 +21,10 @@ function requireAuth() {
             return null;
         }
         return user;
+    }).catch(function (error) {
+        /* Backend unreachable or session invalid: never show protected content. */
+        redirectToLogin(error && error.message ? error.message : "Please log in to continue.");
+        return null;
     });
 }
 
