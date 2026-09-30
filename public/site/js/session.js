@@ -21,6 +21,10 @@ function requireAuth() {
             return null;
         }
         return user;
+    }).catch(function (error) {
+        /* Backend unreachable or session invalid: never show protected content. */
+        redirectToLogin(error && error.message ? error.message : "Please log in to continue.");
+        return null;
     });
 }
 
