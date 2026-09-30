@@ -19,7 +19,7 @@ function initLogin() {
         if (user) {
             window.location.href = "dashboard.html";
         }
-    });
+    }).catch(function () { /* backend not available yet: stay on login */ });
 
     form.addEventListener("submit", function (event) {
         event.preventDefault();
